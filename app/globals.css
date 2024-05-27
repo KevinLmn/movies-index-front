@@ -31,3 +31,15 @@ body {
     text-wrap: balance;
   }
 }
+
+.searchbar:focus{
+  outline: none !important;
+    border: 3px solid gray;
+    box-shadow: 0 0 15px #e980e0;
+}
+
+.searchbar:hover{
+  background-color: rgba(238, 230, 230, 0.568);
+    transition: background-color 300ms linear;
+
+}

@@ -1,12 +1,55 @@
-import Image from "next/image";
+'use client'
+
+import Card from "@/components/Card";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+interface Movie {
+  externalId: string;
+  isAdult: boolean;
+  originalLanguage: string;
+  overviewEn: string;
+  overviewFr: string;
+  popularity: number;
+  posterPath: string;
+  releaseDate: string;
+  titleEn: string;
+  titleFr: string;
+  voteAverage: number;
+}
 
 export default function Home() {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+  }, []);
+
+  const handleChange = (e) => {
+    setSearch(e.target.value);
+  }
+
+  const fetchMovies = async () => {
+    const response = await axios.post("http://localhost:3001/search/movie", {
+      text : search
+    })
+    setMovies(response.data);
+  }
+
+
+  useEffect(() => {
+    fetchMovies();
+  }, [search]);
+
+  console.log(movies)
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
+          Incroyable projet pour trouver les meilleurs
+          <code className="font-mono font-bold ml-1"> films</code>
         </p>
         <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
           <a
@@ -16,47 +59,28 @@ export default function Home() {
             rel="noopener noreferrer"
           >
             By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
+            Kevin Lemniai <FontAwesomeIcon icon={faStar} />
           </a>
         </div>
       </div>
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+      
+      <form className="w-[30%] mt-10">
+        <input onChange={handleChange} type="text" placeholder="Cherchez un film.." className="bg-gray-100 p-2 rounded-lg searchbar w-[100%]" />
+      </form>
+
+      <div className="bg-gray-300 text-gray-800 p-16 rounded-2xl w-[70%] flex flex-col items-center justify-center m-10 flex-wrap"> 
+        <div>
+          <p className="text-center mb-5 font-mono font-medium">Movies : {movies && movies.estimatedTotalHits} found in {movies && movies.processingTimeMs} ms</p>
+          <div className="w-[100%] flex flex-row items-center justify-center gap-3 flex-wrap">
+            {movies.hits &&  movies.hits.length > 0 && movies.hits.map((movie) => (
+            <Card width={160} key={movie.externalId} externalId={movie.externalId} isAdult={movie.isAdult} originalLanguage={movie.originalLanguage} overviewEn={movie.overviewEn} overviewFr={movie.overviewFr} popularity={movie.popularity} posterPath={movie.posterPath} releaseDate={movie.releaseDate} titleEn={movie.titleEn} titleFr={movie.titleFr} voteAverage={movie.voteAverage} />
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
         <a
           href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
           className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
@@ -64,13 +88,13 @@ export default function Home() {
           rel="noopener noreferrer"
         >
           <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
+            Retrouvez moi{" "}
             <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
               -&gt;
             </span>
           </h2>
           <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
+            Mettre liens github et linkeding
           </p>
         </a>
 
