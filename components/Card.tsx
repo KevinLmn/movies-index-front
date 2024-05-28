@@ -29,15 +29,15 @@ const Card = ({
 }: Props) => {
   const date = new Date(releaseDate * 1000);
   const year = date.getFullYear();
-  console.log(width);
   return (
     <Link href={`/${externalId}`} className="flex flex-col justify-between">
       {posterPath ? (
         <Image
-          src={`https://image.tmdb.org/t/p/original${posterPath}`}
-          className={`rounded-lg min-h-${minHeight}`}
+          src={`https://image.tmdb.org/t/p/w185/${posterPath}`}
+          className={`rounded-lg h-${minHeight}`}
           width={width}
-          height={280}
+          height={340}
+          objectFit="cover"
           alt={`poster of ${titleEn}`}
         />
       ) : (
